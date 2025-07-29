@@ -33,22 +33,24 @@ jobs:
       - name: Install dependencies
         run: |
           uv sync --dev
+          # Ensure all dev dependencies are available
+          uv pip install -r requirements/dev.txt
       
       - name: Run security checks
         run: |
-          bandit -r . -f json -o bandit-report.json || true
-          safety check --json --output safety-report.json || true
-          semgrep --config=auto --json --output=semgrep-report.json . || true
+          uv run bandit -r . -f json -o bandit-report.json || true
+          uv run safety check --json --output safety-report.json || true
+          uv run semgrep --config=auto --json --output=semgrep-report.json . || true
       
       - name: Run linting
         run: |
-          ruff check .
-          ruff format --check .
-          mypy services agents tools
+          uv run ruff check .
+          uv run ruff format --check .
+          uv run mypy services agents tools
       
       - name: Run tests
         run: |
-          pytest --cov=services --cov=agents --cov=tools --cov-report=xml --cov-report=html
+          uv run pytest --cov=services --cov=agents --cov=tools --cov-report=xml --cov-report=html
       
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
