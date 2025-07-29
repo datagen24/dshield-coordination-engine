@@ -24,22 +24,22 @@ def sample_attack_sessions() -> list[dict[str, Any]]:
             "timestamp": "2025-07-28T10:00:00Z",
             "payload": "test attack payload 1",
             "target_port": 22,
-            "protocol": "ssh"
+            "protocol": "ssh",
         },
         {
             "source_ip": "192.168.1.2",
             "timestamp": "2025-07-28T10:05:00Z",
             "payload": "test attack payload 2",
             "target_port": 80,
-            "protocol": "http"
+            "protocol": "http",
         },
         {
             "source_ip": "192.168.1.3",
             "timestamp": "2025-07-28T10:10:00Z",
             "payload": "test attack payload 3",
             "target_port": 443,
-            "protocol": "https"
-        }
+            "protocol": "https",
+        },
     ]
 
 
@@ -49,7 +49,7 @@ def sample_coordination_request(sample_attack_sessions) -> dict[str, Any]:
     return {
         "attack_sessions": sample_attack_sessions,
         "analysis_depth": "standard",
-        "callback_url": "http://example.com/callback"
+        "callback_url": "http://example.com/callback",
     }
 
 
@@ -63,9 +63,9 @@ def sample_analysis_result() -> dict[str, Any]:
         "evidence": {
             "temporal_correlation": 0.8,
             "behavioral_similarity": 0.7,
-            "infrastructure_clustering": 0.6
+            "infrastructure_clustering": 0.6,
         },
-        "enrichment_applied": True
+        "enrichment_applied": True,
     }
 
 
@@ -79,15 +79,7 @@ def mock_settings():
 
 def pytest_configure(config):
     """Configure pytest."""
-    config.addinivalue_line(
-        "markers", "unit: Unit tests"
-    )
-    config.addinivalue_line(
-        "markers", "integration: Integration tests"
-    )
-    config.addinivalue_line(
-        "markers", "security: Security tests"
-    )
-    config.addinivalue_line(
-        "markers", "slow: Slow running tests"
-    )
+    config.addinivalue_line("markers", "unit: Unit tests")
+    config.addinivalue_line("markers", "integration: Integration tests")
+    config.addinivalue_line("markers", "security: Security tests")
+    config.addinivalue_line("markers", "slow: Slow running tests")

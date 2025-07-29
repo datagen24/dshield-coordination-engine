@@ -24,9 +24,7 @@ class BaseAgent(ABC):
     def log_processing(self, state: dict[str, Any]) -> None:
         """Log processing start."""
         self.logger.info(
-            "Agent processing started",
-            agent=self.name,
-            state_keys=list(state.keys())
+            "Agent processing started", agent=self.name, state_keys=list(state.keys())
         )
 
     def log_completion(self, state: dict[str, Any]) -> None:
@@ -34,7 +32,7 @@ class BaseAgent(ABC):
         self.logger.info(
             "Agent processing completed",
             agent=self.name,
-            result_keys=list(state.keys())
+            result_keys=list(state.keys()),
         )
 
     def log_error(self, error: Exception, state: dict[str, Any]) -> None:
@@ -43,7 +41,7 @@ class BaseAgent(ABC):
             "Agent processing failed",
             agent=self.name,
             error=str(error),
-            state_keys=list(state.keys())
+            state_keys=list(state.keys()),
         )
 
     async def execute(self, state: dict[str, Any]) -> dict[str, Any]:
@@ -84,7 +82,7 @@ class CoordinationAnalysisState:
             "tool_results": self.tool_results,
             "final_assessment": self.final_assessment,
             "errors": self.errors,
-            "warnings": self.warnings
+            "warnings": self.warnings,
         }
 
     @classmethod

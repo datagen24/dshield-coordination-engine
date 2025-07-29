@@ -18,6 +18,7 @@ router = APIRouter()
 
 class AttackSession(BaseModel):
     """Attack session data model."""
+
     source_ip: str = Field(..., description="Source IP address")
     timestamp: datetime = Field(..., description="Attack timestamp")
     payload: str = Field(..., description="Attack payload")
@@ -27,45 +28,55 @@ class AttackSession(BaseModel):
 
 class CoordinationRequest(BaseModel):
     """Request model for coordination analysis."""
-    attack_sessions: list[AttackSession] = Field(..., description="List of attack sessions")
-    analysis_depth: str = Field("standard", description="Analysis depth: minimal, standard, deep")
+
+    attack_sessions: list[AttackSession] = Field(
+        ..., description="List of attack sessions"
+    )
+    analysis_depth: str = Field(
+        "standard", description="Analysis depth: minimal, standard, deep"
+    )
     callback_url: str | None = Field(None, description="Callback URL for results")
 
 
 class CoordinationResponse(BaseModel):
     """Response model for coordination analysis."""
+
     analysis_id: str = Field(..., description="Unique analysis ID")
     status: str = Field(..., description="Analysis status")
-    coordination_confidence: float | None = Field(None, description="Coordination confidence score")
+    coordination_confidence: float | None = Field(
+        None, description="Coordination confidence score"
+    )
     evidence: dict[str, Any] | None = Field(None, description="Analysis evidence")
-    enrichment_applied: bool = Field(False, description="Whether enrichment was applied")
+    enrichment_applied: bool = Field(
+        False, description="Whether enrichment was applied"
+    )
 
 
 @router.post("/coordination", response_model=CoordinationResponse)
 async def analyze_coordination(
     request: CoordinationRequest,
     background_tasks: BackgroundTasks,
-    current_user: str = Depends(get_current_user)
+    current_user: str = Depends(get_current_user),
 ) -> CoordinationResponse:
     """Analyze attack sessions for coordination patterns."""
     logger.info(
         "Coordination analysis requested",
         user=current_user,
         session_count=len(request.attack_sessions),
-        analysis_depth=request.analysis_depth
+        analysis_depth=request.analysis_depth,
     )
 
     # Validate input
     if len(request.attack_sessions) < 2:
         raise HTTPException(
             status_code=400,
-            detail="At least 2 attack sessions required for coordination analysis"
+            detail="At least 2 attack sessions required for coordination analysis",
         )
 
     if len(request.attack_sessions) > settings.analysis_max_sessions:
         raise HTTPException(
             status_code=400,
-            detail=f"Maximum {settings.analysis_max_sessions} sessions allowed"
+            detail=f"Maximum {settings.analysis_max_sessions} sessions allowed",
         )
 
     # Generate analysis ID
@@ -77,31 +88,21 @@ async def analyze_coordination(
         analysis_id,
         request.attack_sessions,
         request.analysis_depth,
-        current_user
+        current_user,
     )
 
-    logger.info(
-        "Analysis queued",
-        analysis_id=analysis_id,
-        user=current_user
-    )
+    logger.info("Analysis queued", analysis_id=analysis_id, user=current_user)
 
-    return CoordinationResponse(
-        analysis_id=analysis_id,
-        status="queued"
-    )
+    return CoordinationResponse(analysis_id=analysis_id, status="queued")
 
 
 @router.get("/{analysis_id}", response_model=CoordinationResponse)
 async def get_analysis_results(
-    analysis_id: str,
-    current_user: str = Depends(get_current_user)
+    analysis_id: str, current_user: str = Depends(get_current_user)
 ) -> CoordinationResponse:
     """Get coordination analysis results."""
     logger.info(
-        "Analysis results requested",
-        analysis_id=analysis_id,
-        user=current_user
+        "Analysis results requested", analysis_id=analysis_id, user=current_user
     )
 
     # TODO: Implement result retrieval from database
@@ -113,22 +114,20 @@ async def get_analysis_results(
         evidence={
             "temporal_correlation": 0.8,
             "behavioral_similarity": 0.7,
-            "infrastructure_clustering": 0.6
+            "infrastructure_clustering": 0.6,
         },
-        enrichment_applied=True
+        enrichment_applied=True,
     )
 
 
 @router.post("/bulk")
 async def bulk_analysis(
     session_batches: list[list[AttackSession]],
-    current_user: str = Depends(get_current_user)
+    current_user: str = Depends(get_current_user),
 ) -> dict[str, Any]:
     """Process multiple batches for continuous monitoring."""
     logger.info(
-        "Bulk analysis requested",
-        user=current_user,
-        batch_count=len(session_batches)
+        "Bulk analysis requested", user=current_user, batch_count=len(session_batches)
     )
 
     analysis_ids = []
@@ -138,24 +137,21 @@ async def bulk_analysis(
 
         # TODO: Queue batch analysis
 
-    return {
-        "analysis_ids": analysis_ids,
-        "status": "queued"
-    }
+    return {"analysis_ids": analysis_ids, "status": "queued"}
 
 
 async def process_coordination_analysis(
     analysis_id: str,
     attack_sessions: list[AttackSession],
     analysis_depth: str,
-    user: str
+    user: str,
 ) -> None:
     """Process coordination analysis in background."""
     logger.info(
         "Processing coordination analysis",
         analysis_id=analysis_id,
         user=user,
-        session_count=len(attack_sessions)
+        session_count=len(attack_sessions),
     )
 
     try:
@@ -166,17 +162,10 @@ async def process_coordination_analysis(
         # 3. Storing in database
         # 4. Sending notifications if callback_url provided
 
-        logger.info(
-            "Analysis completed",
-            analysis_id=analysis_id,
-            user=user
-        )
+        logger.info("Analysis completed", analysis_id=analysis_id, user=user)
 
     except Exception as e:
         logger.error(
-            "Analysis failed",
-            analysis_id=analysis_id,
-            user=user,
-            error=str(e)
+            "Analysis failed", analysis_id=analysis_id, user=user, error=str(e)
         )
         # TODO: Update analysis status to failed

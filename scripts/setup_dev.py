@@ -55,12 +55,7 @@ def setup_environment():
 
     # Create necessary directories
     print("Creating directories...")
-    directories = [
-        "logs",
-        "config",
-        "data",
-        "models"
-    ]
+    directories = ["logs", "config", "data", "models"]
 
     for directory in directories:
         Path(directory).mkdir(exist_ok=True)

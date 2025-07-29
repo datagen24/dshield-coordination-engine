@@ -78,6 +78,7 @@ class Settings(BaseSettings):
         """Parse list fields from environment variables."""
         if isinstance(v, str):
             import json
+
             try:
                 return json.loads(v)
             except json.JSONDecodeError:

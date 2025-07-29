@@ -16,7 +16,7 @@ async def health_check() -> dict[str, Any]:
     return {
         "status": "healthy",
         "service": "dshield-coordination-engine",
-        "version": "0.1.0"
+        "version": "0.1.0",
     }
 
 
@@ -25,10 +25,7 @@ async def readiness_check() -> dict[str, Any]:
     """Readiness check for Kubernetes."""
     try:
         # Add dependency checks here (database, redis, etc.)
-        return {
-            "status": "ready",
-            "service": "dshield-coordination-engine"
-        }
+        return {"status": "ready", "service": "dshield-coordination-engine"}
     except Exception as e:
         logger.error("Readiness check failed", error=str(e))
         raise HTTPException(status_code=503, detail="Service not ready") from e
@@ -37,7 +34,4 @@ async def readiness_check() -> dict[str, Any]:
 @router.get("/live")
 async def liveness_check() -> dict[str, Any]:
     """Liveness check for Kubernetes."""
-    return {
-        "status": "alive",
-        "service": "dshield-coordination-engine"
-    }
+    return {"status": "alive", "service": "dshield-coordination-engine"}

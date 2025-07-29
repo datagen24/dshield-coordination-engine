@@ -19,15 +19,15 @@ from services.api.routers.coordination import (
 class TestAnalyzeCoordination:
     """Test coordination analysis endpoint."""
 
-    def test_analyze_coordination_success(self, sample_coordination_request, mock_settings):
+    def test_analyze_coordination_success(
+        self, sample_coordination_request, mock_settings
+    ):
         """Test successful coordination analysis."""
         background_tasks = Mock()
         current_user = "test-user"
 
         result = analyze_coordination(
-            sample_coordination_request,
-            background_tasks,
-            current_user
+            sample_coordination_request, background_tasks, current_user
         )
 
         assert isinstance(result, CoordinationResponse)
@@ -37,12 +37,14 @@ class TestAnalyzeCoordination:
         """Test coordination analysis with insufficient sessions."""
         mock_settings.analysis_max_sessions = 1000
         request = CoordinationRequest(
-            attack_sessions=[AttackSession(
-                source_ip="192.168.1.1",
-                timestamp="2025-07-28T10:00:00Z",
-                payload="test payload"
-            )],  # Only one session
-            analysis_depth="standard"
+            attack_sessions=[
+                AttackSession(
+                    source_ip="192.168.1.1",
+                    timestamp="2025-07-28T10:00:00Z",
+                    payload="test payload",
+                )
+            ],  # Only one session
+            analysis_depth="standard",
         )
 
         background_tasks = Mock()
@@ -62,20 +64,20 @@ class TestAnalyzeCoordination:
                 AttackSession(
                     source_ip="192.168.1.1",
                     timestamp="2025-07-28T10:00:00Z",
-                    payload="test payload 1"
+                    payload="test payload 1",
                 ),
                 AttackSession(
                     source_ip="192.168.1.2",
                     timestamp="2025-07-28T10:05:00Z",
-                    payload="test payload 2"
+                    payload="test payload 2",
                 ),
                 AttackSession(
                     source_ip="192.168.1.3",
                     timestamp="2025-07-28T10:10:00Z",
-                    payload="test payload 3"
-                )
+                    payload="test payload 3",
+                ),
             ],  # 3 sessions
-            analysis_depth="standard"
+            analysis_depth="standard",
         )
 
         background_tasks = Mock()
@@ -137,8 +139,5 @@ class TestProcessCoordinationAnalysis:
 
         # This should not raise an exception
         await process_coordination_analysis(
-            analysis_id,
-            attack_sessions,
-            analysis_depth,
-            user
+            analysis_id, attack_sessions, analysis_depth, user
         )

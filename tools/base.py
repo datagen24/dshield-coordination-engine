@@ -25,9 +25,7 @@ class BaseTool(ABC):
     def log_execution(self, data: dict[str, Any]) -> None:
         """Log tool execution start."""
         self.logger.info(
-            "Tool execution started",
-            tool_name=self.name,
-            data_keys=list(data.keys())
+            "Tool execution started", tool_name=self.name, data_keys=list(data.keys())
         )
 
     def log_completion(self, result: dict[str, Any]) -> None:
@@ -35,7 +33,7 @@ class BaseTool(ABC):
         self.logger.info(
             "Tool execution completed",
             tool_name=self.name,
-            result_keys=list(result.keys())
+            result_keys=list(result.keys()),
         )
 
     def log_error(self, error: Exception, data: dict[str, Any]) -> None:
@@ -44,7 +42,7 @@ class BaseTool(ABC):
             "Tool execution failed",
             tool_name=self.name,
             error=str(error),
-            data_keys=list(data.keys())
+            data_keys=list(data.keys()),
         )
 
     async def run(self, data: dict[str, Any]) -> dict[str, Any]:

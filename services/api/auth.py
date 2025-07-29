@@ -32,7 +32,7 @@ async def verify_api_key(request: Request) -> bool:
         logger.warning(
             "Invalid API key",
             client_ip=request.client.host,
-            provided_key=api_key[:8] + "..." if len(api_key) > 8 else "***"
+            provided_key=api_key[:8] + "..." if len(api_key) > 8 else "***",
         )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
