@@ -1,0 +1,90 @@
+"""Base tool class for external integrations."""
+
+from abc import ABC, abstractmethod
+from typing import Dict, Any, List, Optional
+import structlog
+
+logger = structlog.get_logger(__name__)
+
+
+class BaseTool(ABC):
+    """Base class for all external tool integrations."""
+    
+    def __init__(self, name: str, config: Optional[Dict[str, Any]] = None):
+        """Initialize the tool."""
+        self.name = name
+        self.config = config or {}
+        self.logger = logger.bind(tool=name)
+    
+    @abstractmethod
+    async def execute(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute the tool with given data."""
+        pass
+    
+    def log_execution(self, data: Dict[str, Any]) -> None:
+        """Log tool execution start."""
+        self.logger.info(
+            "Tool execution started",
+            tool=self.name,
+            data_keys=list(data.keys())
+        )
+    
+    def log_completion(self, result: Dict[str, Any]) -> None:
+        """Log tool execution completion."""
+        self.logger.info(
+            "Tool execution completed",
+            tool=self.name,
+            result_keys=list(result.keys())
+        )
+    
+    def log_error(self, error: Exception, data: Dict[str, Any]) -> None:
+        """Log tool execution error."""
+        self.logger.error(
+            "Tool execution failed",
+            tool=self.name,
+            error=str(error),
+            data_keys=list(data.keys())
+        )
+    
+    async def run(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Run the tool with error handling."""
+        try:
+            self.log_execution(data)
+            result = await self.execute(data)
+            self.log_completion(result)
+            return result
+        except Exception as e:
+            self.log_error(e, data)
+            raise
+
+
+class ToolRegistry:
+    """Registry for managing tool instances."""
+    
+    def __init__(self):
+        """Initialize the tool registry."""
+        self.tools: Dict[str, BaseTool] = {}
+    
+    def register(self, tool: BaseTool) -> None:
+        """Register a tool."""
+        self.tools[tool.name] = tool
+        logger.info("Tool registered", tool_name=tool.name)
+    
+    def get(self, name: str) -> Optional[BaseTool]:
+        """Get a tool by name."""
+        return self.tools.get(name)
+    
+    def list_tools(self) -> List[str]:
+        """List all registered tool names."""
+        return list(self.tools.keys())
+    
+    async def execute_tool(self, name: str, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute a tool by name."""
+        tool = self.get(name)
+        if not tool:
+            raise ValueError(f"Tool '{name}' not found")
+        return await tool.run(data)
+
+
+# Global tool registry instance
+tool_registry = ToolRegistry() 

@@ -1,0 +1,53 @@
+# DShield Coordination Engine - Celery Worker
+# Background task processing
+
+FROM python:3.11-slim
+
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Create non-root user for security
+RUN groupadd -r coordinator && \
+    useradd -r -g coordinator -u 1000 coordinator && \
+    mkdir -p /app && \
+    chown coordinator:coordinator /app
+
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        curl \
+        gcc \
+        g++ \
+        libpq-dev \
+        && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Switch to non-root user
+USER coordinator
+WORKDIR /app
+
+# Copy requirements first for better caching
+COPY --chown=coordinator:coordinator requirements/ requirements/
+COPY --chown=coordinator:coordinator pyproject.toml .
+
+# Install Python dependencies
+RUN pip install --user --no-cache-dir -r requirements/base.txt
+
+# Copy application code
+COPY --chown=coordinator:coordinator services/ services/
+COPY --chown=coordinator:coordinator agents/ agents/
+COPY --chown=coordinator:coordinator tools/ tools/
+
+# Create necessary directories
+RUN mkdir -p /app/logs /app/config
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD python -c "from services.workers.celery_app import app; app.control.inspect().active()" || exit 1
+
+# Default command (can be overridden)
+CMD ["celery", "-A", "services.workers.celery_app", "worker", "--loglevel=info", "--concurrency=2"] 
