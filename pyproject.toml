@@ -180,4 +180,4 @@ exclude_dirs = ["tests"]
 skips = ["B101", "B601"]
 
 [tool.semgrep]
-config = "auto" 
+config = "auto"

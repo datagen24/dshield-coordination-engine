@@ -28,7 +28,7 @@ class OrchestratorAgent:
         # Examine attack session data from Elasticsearch
         # Determine complexity and required analysis depth
         # Route to appropriate analysis path
-        
+
     def should_deep_analyze(self, sessions) -> bool:
         # Quick heuristics: timing windows, source diversity, etc.
         # Returns True if coordination is possible
@@ -41,18 +41,18 @@ class PatternAnalyzerAgent:
     def temporal_analysis(self, state):
         # Analyze timing patterns, intervals, synchronization
         # Statistical clustering of attack timings
-        
+
     def behavioral_clustering(self, state):
         # TTP similarity analysis
         # Attack vector patterns
         # Payload similarities
-        
+
     def infrastructure_mapping(self, state):
         # IP relationships, ASN analysis
         # Geolocation clustering vs dispersion
 ```
 
-### 3. **Tool Coordinator Agent** 
+### 3. **Tool Coordinator Agent**
 **Purpose**: Orchestrates external tools based on analysis needs
 ```python
 class ToolCoordinatorAgent:
@@ -78,7 +78,7 @@ class ConfidenceScorerAgent:
             'geographic_dispersion': 0.0,
             'threat_intel_correlation': 0.0
         }
-        
+
         # Weight and combine factors
         # Return structured confidence assessment
 ```
@@ -98,27 +98,27 @@ class ElasticsearchEnricherAgent:
 ```python
 def create_coordination_analysis_workflow():
     workflow = StateGraph(CoordinationAnalysisState)
-    
+
     # Add nodes
     workflow.add_node("orchestrator", orchestrator_node)
     workflow.add_node("pattern_analyzer", pattern_analyzer_node)
     workflow.add_node("tool_coordinator", tool_coordinator_node)
     workflow.add_node("confidence_scorer", confidence_scorer_node)
     workflow.add_node("elasticsearch_enricher", elasticsearch_enricher_node)
-    
+
     # Define flow
     workflow.set_entry_point("orchestrator")
-    
+
     workflow.add_conditional_edges(
         "orchestrator",
         lambda state: "pattern_analyzer" if state.get("needs_analysis") else "confidence_scorer"
     )
-    
+
     workflow.add_edge("pattern_analyzer", "tool_coordinator")
     workflow.add_edge("tool_coordinator", "confidence_scorer")
     workflow.add_edge("confidence_scorer", "elasticsearch_enricher")
     workflow.add_edge("elasticsearch_enricher", END)
-    
+
     return workflow.compile()
 ```
 
@@ -130,7 +130,7 @@ class BGPAnalysisTool:
     async def analyze_ip_relationships(self, ips: List[str]):
         # Check ASN clustering, routing relationships
         # Return infrastructure correlation data
-        
+
 class ThreatIntelTool:
     async def lookup_indicators(self, iocs: List[str]):
         # Query multiple threat intel sources

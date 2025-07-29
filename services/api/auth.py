@@ -1,8 +1,8 @@
 """Authentication utilities for the DShield Coordination Engine API."""
 
-from fastapi import HTTPException, Depends, status, Request
-from fastapi.security import HTTPBearer
 import structlog
+from fastapi import HTTPException, Request, status
+from fastapi.security import HTTPBearer
 
 from services.api.config import settings
 
@@ -15,10 +15,10 @@ async def verify_api_key(request: Request) -> bool:
     # Skip authentication in debug mode
     if settings.debug:
         return True
-    
+
     # Get API key from header
     api_key = request.headers.get(settings.api_key_header)
-    
+
     if not api_key:
         logger.warning("Missing API key", client_ip=request.client.host)
         raise HTTPException(
@@ -26,7 +26,7 @@ async def verify_api_key(request: Request) -> bool:
             detail="Missing API key",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     # Verify API key
     if api_key != settings.api_key:
         logger.warning(
@@ -39,7 +39,7 @@ async def verify_api_key(request: Request) -> bool:
             detail="Invalid API key",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     logger.info("API key verified", client_ip=request.client.host)
     return True
 
@@ -48,4 +48,4 @@ def get_current_user(request: Request) -> str:
     """Get current user identifier from request."""
     # For now, return client IP as user identifier
     # In a real implementation, this would extract user info from JWT token
-    return request.client.host if request.client else "unknown" 
+    return request.client.host if request.client else "unknown"

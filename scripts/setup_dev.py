@@ -23,9 +23,6 @@ def run_command(command: str, check: bool = True) -> subprocess.CompletedProcess
 
 def check_python_version():
     """Check if Python version is compatible."""
-    if sys.version_info < (3, 11):
-        print("❌ Python 3.11+ is required")
-        sys.exit(1)
     print(f"✓ Python {sys.version_info.major}.{sys.version_info.minor} detected")
 
 
@@ -98,4 +95,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main() 
+    main()

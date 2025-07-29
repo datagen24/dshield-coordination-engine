@@ -18,66 +18,66 @@ A well-organized codebase is crucial for maintainability and testability. Here a
 
 - **Separate `tests/` directory:** Keep your tests in a directory separate from your application code, typically named `tests/`. This promotes isolation and cleaner project structure.
 
-  
+
   my_project/
-  
+
  my_app/
-  
-   
+
+
  __init__.py
-  
-   
+
+
  module1.py
-  
-   
+
+
  module2.py
-  
+
  tests/
-  
-   
+
+
  __init__.py
-  
-   
+
+
  test_module1.py
-  
-   
+
+
  test_module2.py
-  
+
  pyproject.toml
-  
+
 
 - **`src` layout (Recommended):** Consider using a `src` layout to further isolate application code from the project root. This prevents import conflicts and improves clarity.
 
-  
+
   my_project/
-  
+
  src/
-  
-   
+
+
  my_app/
-  
-       
+
+
  __init__.py
-  
-       
+
+
  module1.py
-  
-       
+
+
  module2.py
-  
+
  tests/
-  
-   
+
+
  __init__.py
-  
-   
+
+
  test_module1.py
-  
-   
+
+
  test_module2.py
-  
+
  pyproject.toml
-  
+
 
 ### 1.2. File Naming Conventions
 
@@ -119,7 +119,7 @@ A well-organized codebase is crucial for maintainability and testability. Here a
 
       # Assert
       assert result == expected_result
-  
+
 
 - **Fixture factory:** Use fixture factories to create reusable test data.
 
@@ -135,7 +135,7 @@ A well-organized codebase is crucial for maintainability and testability. Here a
   def test_create_user(user_factory):
       user = user_factory("testuser", "test@example.com")
       assert user["username"] == "testuser"
-  
+
 
 ### 2.2. Recommended Approaches
 
@@ -172,7 +172,7 @@ A well-organized codebase is crucial for maintainability and testability. Here a
       with pytest.raises(ValueError) as e:
           divide(10, 0)
       assert str(e.value) == "Cannot divide by zero"
-  
+
 
 - **Use `pytest.raises`:** Use `pytest.raises` to assert that a specific exception is raised.
 - **Log errors:** Ensure your application logs errors appropriately, and consider writing tests to verify that errors are logged correctly.
@@ -258,7 +258,7 @@ A well-organized codebase is crucial for maintainability and testability. Here a
   def test_example(mocker):
       mock_external_api = mocker.patch("module.external_api", autospec=True)
       mock_external_api.return_value = {"data": "test data"}
-  
+
 
 ## 6. Common Pitfalls and Gotchas
 
@@ -310,7 +310,7 @@ A well-organized codebase is crucial for maintainability and testability. Here a
   testpaths = [
       "tests",
   ]
-  
+
 
 ### 7.3. Linting and Formatting
 
@@ -328,7 +328,7 @@ A well-organized codebase is crucial for maintainability and testability. Here a
 
   Example GitHub Actions workflow (`.github/workflows/test.yml`):
 
-  
+
   name: Test
   on:
     push:
@@ -362,6 +362,6 @@ A well-organized codebase is crucial for maintainability and testability. Here a
             flags: unittests
             env_vars: OS,PYTHON
             name: codecov-pytest
-  
+
 
 By following these best practices, you can write effective and maintainable tests with pytest, improving the quality and reliability of your Python applications.

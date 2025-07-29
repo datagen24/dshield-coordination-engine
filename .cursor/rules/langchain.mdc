@@ -19,40 +19,40 @@ project_root/
 
  src/                    # Source code directory
 
-   
+
  components/          # Reusable LangChain components (e.g., custom chains, tools)
 
-   
+
  chains/              # Definitions of LangChain chains
 
-   
+
  agents/              # Agent implementations
 
-   
+
  memory/              # Memory implementations
 
-   
+
  utils/               # Utility functions and modules
 
-   
+
  models/              # Custom model definitions or wrappers
 
-   
+
  callbacks/           # Custom callback handlers
 
-   
+
  vectorstores/        # Vectorstore configurations and connections
 
-   
+
  document_loaders/  # Custom document loaders
 
-   
+
  prompts/             # Prompt templates and management
 
-   
+
  config/              # Configuration files
 
-   
+
  main.py              # Entry point of the application
 
  tests/                  # Unit and integration tests

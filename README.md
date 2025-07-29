@@ -173,4 +173,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 ## Related Projects
 
 - [dshield-mcp](https://github.com/datagen24/dsheild-mcp): Model Context Protocol server for cybersecurity analysis
-- [DShield](https://dshield.org): Distributed intrusion detection system 
+- [DShield](https://dshield.org): Distributed intrusion detection system

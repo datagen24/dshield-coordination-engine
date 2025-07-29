@@ -1,1 +1,1 @@
-"""Test suite for DShield Coordination Engine.""" 
+"""Test suite for DShield Coordination Engine."""

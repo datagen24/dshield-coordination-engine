@@ -69,7 +69,7 @@ class AttackSession(BaseModel):
     source_ip: str
     timestamp: datetime
     payload: str
-    
+
     @validator('source_ip')
     def validate_ip(cls, v):
         try:
@@ -77,7 +77,7 @@ class AttackSession(BaseModel):
             return v
         except ValueError:
             raise ValueError('Invalid IP address format')
-    
+
     @validator('payload')
     def validate_payload_size(cls, v):
         if len(v) > 10000:  # 10KB limit
@@ -97,8 +97,8 @@ security = HTTPBearer()
 def verify_token(token: str = Depends(security)):
     try:
         payload = jwt.decode(
-            token.credentials, 
-            settings.SECRET_KEY, 
+            token.credentials,
+            settings.SECRET_KEY,
             algorithms=["HS256"]
         )
         return payload
@@ -187,18 +187,18 @@ jobs:
 
 # Type hints for all functions
 def analyze_coordination(
-    attack_sessions: List[AttackSession], 
+    attack_sessions: List[AttackSession],
     confidence_threshold: float = 0.7
 ) -> CoordinationResult:
     """Analyze attack sessions for coordination patterns.
-    
+
     Args:
         attack_sessions: List of attack session data
         confidence_threshold: Minimum confidence for positive detection
-        
+
     Returns:
         CoordinationResult with confidence score and evidence
-        
+
     Raises:
         ValidationError: If input data is invalid
     """
@@ -242,7 +242,7 @@ class TestCoordinationAnalyzer:
             llm_client=Mock(),
             confidence_threshold=0.7
         )
-    
+
     @pytest.fixture
     def sample_sessions(self):
         return [
@@ -252,24 +252,24 @@ class TestCoordinationAnalyzer:
                 payload="test payload"
             )
         ]
-    
+
     def test_coordination_detection_positive(self, analyzer, sample_sessions):
         """Test coordination detection with coordinated attacks."""
         with patch.object(analyzer.pattern_analyzer, 'analyze') as mock_analyze:
             mock_analyze.return_value = {"coordination_score": 0.9}
-            
+
             result = analyzer.analyze_coordination(sample_sessions)
-            
+
             assert result.coordination_confidence > 0.7
             assert result.is_coordinated is True
-    
+
     def test_coordination_detection_negative(self, analyzer, sample_sessions):
         """Test coordination detection with random attacks."""
         with patch.object(analyzer.pattern_analyzer, 'analyze') as mock_analyze:
             mock_analyze.return_value = {"coordination_score": 0.3}
-            
+
             result = analyzer.analyze_coordination(sample_sessions)
-            
+
             assert result.coordination_confidence < 0.7
             assert result.is_coordinated is False
 ```
@@ -290,21 +290,21 @@ async def test_coordination_api_integration():
             json={"attack_sessions": test_sessions},
             headers={"Authorization": f"Bearer {test_token}"}
         )
-        
+
         assert response.status_code == 200
         analysis_id = response.json()["analysis_id"]
-        
+
         # Poll for results
         for _ in range(30):  # 30 second timeout
             result_response = await client.get(
                 f"/analyze/{analysis_id}",
                 headers={"Authorization": f"Bearer {test_token}"}
             )
-            
+
             if result_response.json()["status"] == "completed":
                 break
             await asyncio.sleep(1)
-        
+
         assert result_response.json()["status"] == "completed"
         assert "coordination_confidence" in result_response.json()
 ```
@@ -323,14 +323,14 @@ def performance_monitor(func):
         start_time = time.time()
         result = await func(*args, **kwargs)
         end_time = time.time()
-        
+
         logger.info(
             "Function performance",
             function=func.__name__,
             duration=end_time - start_time,
             args_count=len(args)
         )
-        
+
         # Alert if exceeds threshold
         if end_time - start_time > 300:  # 5 minutes
             logger.warning(
@@ -338,7 +338,7 @@ def performance_monitor(func):
                 function=func.__name__,
                 duration=end_time - start_time
             )
-        
+
         return result
     return wrapper
 
@@ -358,26 +358,26 @@ class ResourceMonitor:
     def __init__(self):
         self.max_memory_mb = 16000  # 16GB limit
         self.max_cpu_percent = 80
-    
+
     async def monitor_resources(self):
         while True:
             memory_usage = psutil.virtual_memory().used / 1024 / 1024
             cpu_usage = psutil.cpu_percent()
-            
+
             if memory_usage > self.max_memory_mb:
                 logger.warning(
                     "Memory usage exceeded threshold",
                     current_mb=memory_usage,
                     threshold_mb=self.max_memory_mb
                 )
-            
+
             if cpu_usage > self.max_cpu_percent:
                 logger.warning(
                     "CPU usage exceeded threshold",
                     current_percent=cpu_usage,
                     threshold_percent=self.max_cpu_percent
                 )
-            
+
             await asyncio.sleep(30)  # Check every 30 seconds
 ```
 
@@ -398,27 +398,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies
         run: |
           pip install uv
           uv sync
-      
+
       - name: Run security checks
         run: |
           bandit -r . -f json
           safety check
           semgrep --config=auto .
-      
+
       - name: Run tests
         run: |
           pytest --cov=. --cov-report=xml
-      
+
       - name: Upload coverage
         uses: codecov/codecov-action@v3
         with:
@@ -429,12 +429,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Build Docker images
         run: |
           docker build -t coordination-api:${{ github.sha }} -f docker/Dockerfile.api .
           docker build -t coordination-worker:${{ github.sha }} -f docker/Dockerfile.worker .
-      
+
       - name: Run container security scan
         run: |
           docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
@@ -471,7 +471,7 @@ class CoordinationRequest(BaseModel):
     """Request model for coordination analysis."""
     attack_sessions: List[AttackSession]
     analysis_depth: str = "standard"
-    
+
     class Config:
         schema_extra = {
             "example": {
@@ -501,31 +501,31 @@ async def analyze_coordination(request: CoordinationRequest):
 ```python
 # REQUIRED: Comprehensive docstrings
 def calculate_temporal_correlation(
-    sessions: List[AttackSession], 
+    sessions: List[AttackSession],
     time_window_seconds: int = 300
 ) -> float:
     """Calculate temporal correlation between attack sessions.
-    
+
     Analyzes timing patterns to determine if attacks show coordination
     based on synchronization within specified time windows.
-    
+
     Args:
         sessions: List of attack session objects with timestamps
         time_window_seconds: Maximum time difference for correlation (default: 5 minutes)
-    
+
     Returns:
         Correlation coefficient between 0.0 (no correlation) and 1.0 (perfect correlation)
-    
+
     Raises:
         InsufficientDataError: If fewer than 2 sessions provided
         ValidationError: If session timestamps are invalid
-    
+
     Example:
         >>> sessions = [session1, session2, session3]
         >>> correlation = calculate_temporal_correlation(sessions, 300)
         >>> print(f"Temporal correlation: {correlation:.2f}")
         Temporal correlation: 0.85
-    
+
     References:
         - Statistical correlation analysis methodology
         - Academic paper: "Coordinated Attack Detection in Honeypot Networks"

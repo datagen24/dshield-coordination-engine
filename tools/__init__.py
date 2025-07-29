@@ -1,1 +1,1 @@
-"""External tool integrations for coordination analysis.""" 
+"""External tool integrations for coordination analysis."""

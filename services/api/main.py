@@ -1,17 +1,15 @@
 """DShield Coordination Engine API Service."""
 
-import os
 from contextlib import asynccontextmanager
-from typing import Dict, Any
 
-from fastapi import FastAPI, HTTPException, Depends, status
+import structlog
+from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer
-import structlog
 
-from services.api.routers import coordination, health
-from services.api.config import settings
 from services.api.auth import verify_api_key
+from services.api.config import settings
+from services.api.routers import coordination, health
 
 # Configure structured logging
 structlog.configure(
@@ -72,7 +70,7 @@ def create_app() -> FastAPI:
         prefix="/health",
         tags=["health"],
     )
-    
+
     app.include_router(
         coordination.router,
         prefix="/analyze",
@@ -104,11 +102,11 @@ async def global_exception_handler(request, exc):
 
 if __name__ == "__main__":
     import uvicorn
-    
+
     uvicorn.run(
         "services.api.main:app",
         host=settings.api_host,
         port=settings.api_port,
         reload=settings.api_reload,
         log_level=settings.api_log_level,
-    ) 
+    )

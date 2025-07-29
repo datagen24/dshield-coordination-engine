@@ -9,36 +9,36 @@ graph TB
         WEB[Web Dashboard]
         API_CLIENT[API Clients]
     end
-    
+
     subgraph "Load Balancer"
         LB[nginx/traefik]
     end
-    
+
     subgraph "Application Layer"
         API[Coordination API<br/>FastAPI/Flask]
         WORKFLOW[LangGraph Workflow Engine]
         QUEUE[Task Queue<br/>Celery/RQ]
     end
-    
+
     subgraph "Analysis Services"
         PATTERN[Pattern Analysis Service]
         TOOLS[Tool Coordination Service]
         CONFIDENCE[Confidence Scoring Service]
         ENRICHER[ES Enrichment Service]
     end
-    
+
     subgraph "Infrastructure Services"
         LLM[Local LLM Service<br/>ollama/vllm]
         REDIS[Redis<br/>Cache/Queue]
         POSTGRES[PostgreSQL<br/>Analysis Results]
     end
-    
+
     subgraph "External Systems"
         ES[(Elasticsearch<br/>Attack Data)]
         BGP[BGP APIs]
         INTEL[Threat Intel APIs]
     end
-    
+
     MCP --> LB
     WEB --> LB
     API_CLIENT --> LB
@@ -232,7 +232,7 @@ async def analyze_coordination(
     background_tasks: BackgroundTasks
 ):
     analysis_id = str(uuid.uuid4())
-    
+
     # Queue analysis task
     background_tasks.add_task(
         process_coordination_analysis,
@@ -240,7 +240,7 @@ async def analyze_coordination(
         request.attack_sessions,
         request.analysis_depth
     )
-    
+
     return CoordinationResponse(
         analysis_id=analysis_id,
         status="queued"
@@ -269,7 +269,7 @@ class CoordinationEngineClient:
     def __init__(self, engine_url: str, api_key: str):
         self.engine_url = engine_url
         self.api_key = api_key
-    
+
     def analyze_coordination(self, attack_sessions: List[Dict]) -> Dict:
         response = requests.post(
             f"{self.engine_url}/analyze/coordination",
@@ -277,7 +277,7 @@ class CoordinationEngineClient:
             headers={"Authorization": f"Bearer {self.api_key}"}
         )
         return response.json()
-    
+
     def get_results(self, analysis_id: str) -> Dict:
         response = requests.get(
             f"{self.engine_url}/analyze/{analysis_id}",
@@ -292,10 +292,10 @@ def analyze_coordination_mcp(attack_data: str) -> str:
         engine_url=os.getenv("COORDINATION_ENGINE_URL"),
         api_key=os.getenv("COORDINATION_API_KEY")
     )
-    
+
     sessions = parse_attack_data(attack_data)
     result = client.analyze_coordination(sessions)
-    
+
     return f"Analysis queued with ID: {result['analysis_id']}"
 ```
 
@@ -370,7 +370,7 @@ spec:
 - **Resource Efficiency**: Single GPU server vs multiple local setups
 
 ### Scalability
-- **Horizontal Scaling**: Add workers for increased throughput  
+- **Horizontal Scaling**: Add workers for increased throughput
 - **Load Distribution**: Balance analysis across multiple containers
 - **Resource Optimization**: Dedicated hardware for ML workloads
 

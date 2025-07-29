@@ -115,4 +115,4 @@ When contributing to this project, please update this changelog by adding a new 
 - **Fixed**: for any bug fixes
 - **Security**: for security-related changes
 
-Follow the format established in this file, and include relevant issue numbers when applicable. 
+Follow the format established in this file, and include relevant issue numbers when applicable.

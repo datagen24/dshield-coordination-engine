@@ -22,99 +22,99 @@ my_langgraph_project/
 
  src/                       # Source code.
 
-   
+
  components/             # Reusable components (e.g., custom nodes, tools).
 
-   
-   
+
+
  __init__.py
 
-   
-   
+
+
  retrieval.py        # Retrieval-related nodes
 
-   
-   
+
+
  tool_selector.py    # Logic for selecting which tool to use
 
-   
-   
+
+
  ...
 
-   
+
  graphs/                 # Graph definitions.
 
-   
-   
+
+
  __init__.py
 
-   
-   
+
+
  customer_support.py  # Example: Customer support graph.
 
-   
-   
+
+
  rag_pipeline.py     # Example: RAG pipeline graph.
 
-   
-   
+
+
  ...
 
-   
+
  utils/                  # Utility functions and helpers.
 
-   
-   
+
+
  __init__.py
 
-   
-   
+
+
  config.py           # Configuration loading
 
-   
-   
+
+
  logging.py          # Logging setup
 
-   
-   
+
+
  ...
 
-   
+
  schemas/                # Data schemas and type definitions.
 
-   
-   
+
+
  __init__.py
 
-   
-   
+
+
  agent_state.py      # Definition of agent state
 
-   
-   
+
+
  ...
 
-   
+
  main.py                 # Entry point of the application.
 
-   
+
  ...
 
  tests/                     # Unit and integration tests.
 
-   
+
  __init__.py
 
-   
+
  components/             # Tests for custom components.
 
-   
+
  graphs/                 # Tests for graph definitions.
 
-   
+
  utils/                  # Tests for utility functions.
 
-   
+
  ...
 
  .env                       # Environment variables.

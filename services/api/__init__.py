@@ -1,1 +1,1 @@
-"""FastAPI Coordination Service Package.""" 
+"""FastAPI Coordination Service Package."""

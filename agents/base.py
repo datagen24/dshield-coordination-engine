@@ -1,8 +1,9 @@
 """Base agent class for coordination analysis."""
 
-import structlog
 from abc import ABC, abstractmethod
 from typing import Any
+
+import structlog
 
 logger = structlog.get_logger(__name__)
 
@@ -99,4 +100,4 @@ class CoordinationAnalysisState:
         state.final_assessment = data.get("final_assessment", {})
         state.errors = data.get("errors", [])
         state.warnings = data.get("warnings", [])
-        return state 
+        return state

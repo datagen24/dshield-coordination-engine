@@ -27,4 +27,4 @@ mkdocstrings[python]>=0.24.0
 
 # Development utilities
 ipython>=8.0.0
-jupyter>=1.0.0 
+jupyter>=1.0.0

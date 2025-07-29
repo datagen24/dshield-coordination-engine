@@ -1,1 +1,1 @@
-"""LangGraph agents for coordination analysis.""" 
+"""LangGraph agents for coordination analysis."""

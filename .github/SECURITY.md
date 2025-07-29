@@ -100,11 +100,11 @@ The DShield Coordination Engine is designed with security compliance in mind:
 - **CCPA** privacy compliance
 - **Academic research** standards compliance
 - **CIS** Center for internet security critical security controls
-Note that while designed with compliance in mind, we do not ensure that we meet these, use at your own risk
+Note that while designed with compliance in mind, we do not ensure that we meet any of the requirements, use at your own risk.
 
 ## Security Resources
 
 - [Security Guidelines](docs/development_guidelines.md#security-requirements)
 - [Container Security](docs/container_architecture.md#security)
 - [API Security](docs/development_guidelines.md#authentication--authorization)
-- [Dependency Security](docs/development_guidelines.md#dependency-security) 
+- [Dependency Security](docs/development_guidelines.md#dependency-security)
