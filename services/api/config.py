@@ -1,7 +1,7 @@
 """Configuration settings for the DShield Coordination Engine API."""
 
-from pydantic import ConfigDict, field_validator
-from pydantic_settings import BaseSettings
+from pydantic import ValidationInfo, field_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -95,14 +95,14 @@ class Settings(BaseSettings):
 
     @field_validator("debug")
     @classmethod
-    def set_debug_defaults(cls, v: bool, info) -> bool:
+    def set_debug_defaults(cls, v: bool, info: ValidationInfo) -> bool:
         """Set debug-related defaults."""
         if v:
             info.data["enable_swagger_ui"] = True
             info.data["enable_redoc"] = True
         return v
 
-    model_config = ConfigDict(
+    model_config = SettingsConfigDict(
         env_file=".env",
         case_sensitive=False,
     )
