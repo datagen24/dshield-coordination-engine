@@ -15,13 +15,17 @@ For detailed API documentation, visit:
 - OpenAPI JSON: /openapi.json
 """
 
+from contextlib import asynccontextmanager
+from collections.abc import AsyncGenerator
+from typing import Any
+
+import structlog
+
 from fastapi import FastAPI, Depends, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.security import HTTPBearer
-from contextlib import asynccontextmanager
-from collections.abc import AsyncGenerator
-import structlog
+
 from services.api.config import settings
 from services.api.auth import verify_api_key
 from services.api.routers import coordination, health
