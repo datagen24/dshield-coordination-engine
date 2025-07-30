@@ -66,8 +66,11 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     logger.info("Shutting down DShield Coordination Engine API")
 
 
-def custom_openapi() -> dict[str, Any]:
+def custom_openapi(app: FastAPI) -> dict[str, Any]:
     """Generate custom OpenAPI schema with enhanced documentation.
+
+    Args:
+        app: FastAPI application instance
 
     Returns:
         Dict[str, Any]: Custom OpenAPI schema with additional metadata
@@ -155,6 +158,8 @@ For detailed usage examples, see the individual endpoint documentation below.
     openapi_schema["info"]["x-logo"] = {"url": "https://dshield.org/logo.png"}
 
     # Add security schemes
+    if "components" not in openapi_schema:
+        openapi_schema["components"] = {}
     openapi_schema["components"]["securitySchemes"] = {
         "ApiKeyAuth": {
             "type": "apiKey",
@@ -222,7 +227,7 @@ def create_app() -> FastAPI:
     )
 
     # Set custom OpenAPI schema
-    app.openapi_schema = custom_openapi()
+    app.openapi_schema = custom_openapi(app)
 
     # Add CORS middleware
     app.add_middleware(
