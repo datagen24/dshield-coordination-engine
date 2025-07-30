@@ -74,7 +74,9 @@ class Settings(BaseSettings):
     worker_processes: int = 4
     worker_threads: int = 2
 
-    @field_validator("allowed_origins", "allowed_methods", "allowed_headers", mode="before")
+    @field_validator(
+        "allowed_origins", "allowed_methods", "allowed_headers", mode="before"
+    )
     @classmethod
     def parse_list_fields(cls, v: str | list[str]) -> list[str]:
         """Parse list fields from environment variables."""
