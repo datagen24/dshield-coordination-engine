@@ -222,7 +222,7 @@ def create_app() -> FastAPI:
     )
 
     # Set custom OpenAPI schema
-    app.openapi = lambda: custom_openapi()
+    app.openapi_schema = custom_openapi()
 
     # Add CORS middleware
     app.add_middleware(
