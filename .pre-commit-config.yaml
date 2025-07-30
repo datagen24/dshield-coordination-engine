@@ -14,13 +14,37 @@ repos:
 
   - repo: local
     hooks:
-      - id: pytest-check
-        name: pytest
-        entry: pytest
+      - id: ruff-check
+        name: ruff check
+        entry: uv run ruff check .
         language: system
         pass_filenames: false
         always_run: true
-        stages: [manual]
+        stages: [pre-commit]
+
+      - id: ruff-format
+        name: ruff format
+        entry: uv run ruff format .
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+
+      - id: mypy-check
+        name: mypy
+        entry: uv run mypy services agents tools
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+
+      - id: pytest-check
+        name: pytest
+        entry: uv run pytest
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
 
       - id: security-scan
         name: security scan

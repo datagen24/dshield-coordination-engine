@@ -59,7 +59,7 @@ class BaseAgent(ABC):
 class CoordinationAnalysisState:
     """Shared state across all coordination analysis agents."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the analysis state."""
         self.attack_sessions: list[dict[str, Any]] = []
         self.correlation_results: dict[str, Any] = {}

@@ -20,7 +20,8 @@ async def verify_api_key(request: Request) -> bool:
     api_key = request.headers.get(settings.api_key_header)
 
     if not api_key:
-        logger.warning("Missing API key", client_ip=request.client.host)
+        client_ip = request.client.host if request.client else "unknown"
+        logger.warning("Missing API key", client_ip=client_ip)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Missing API key",
@@ -29,9 +30,10 @@ async def verify_api_key(request: Request) -> bool:
 
     # Verify API key
     if api_key != settings.api_key:
+        client_ip = request.client.host if request.client else "unknown"
         logger.warning(
             "Invalid API key",
-            client_ip=request.client.host,
+            client_ip=client_ip,
             provided_key=api_key[:8] + "..." if len(api_key) > 8 else "***",
         )
         raise HTTPException(
@@ -40,7 +42,8 @@ async def verify_api_key(request: Request) -> bool:
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    logger.info("API key verified", client_ip=request.client.host)
+    client_ip = request.client.host if request.client else "unknown"
+    logger.info("API key verified", client_ip=client_ip)
     return True
 
 

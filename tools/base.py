@@ -60,7 +60,7 @@ class BaseTool(ABC):
 class ToolRegistry:
     """Registry for managing tool instances."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the tool registry."""
         self.tools: dict[str, BaseTool] = {}
 

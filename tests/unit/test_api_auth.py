@@ -11,46 +11,60 @@ from services.api.auth import get_current_user, verify_api_key
 class TestVerifyApiKey:
     """Test API key verification."""
 
-    def test_verify_api_key_debug_mode(self):
+    @pytest.mark.asyncio
+    async def test_verify_api_key_debug_mode(self):
         """Test API key verification in debug mode."""
-        request = Mock()
-        request.headers = {}
+        from unittest.mock import patch
 
-        result = verify_api_key(request)
-        assert result is True
+        with patch("services.api.auth.settings") as mock_settings:
+            mock_settings.debug = True
+            request = Mock()
+            request.headers = {}
 
-    def test_verify_api_key_missing_key(self):
+            result = await verify_api_key(request)
+            assert result is True
+
+    @pytest.mark.asyncio
+    async def test_verify_api_key_missing_key(self):
         """Test API key verification with missing key."""
         request = Mock()
         request.headers = {}
         request.client.host = "127.0.0.1"
 
         with pytest.raises(HTTPException) as exc_info:
-            verify_api_key(request)
+            await verify_api_key(request)
 
         assert exc_info.value.status_code == 401
         assert "Missing API key" in str(exc_info.value.detail)
 
-    def test_verify_api_key_invalid_key(self):
+    @pytest.mark.asyncio
+    async def test_verify_api_key_invalid_key(self):
         """Test API key verification with invalid key."""
         request = Mock()
         request.headers = {"X-API-Key": "invalid-key"}
         request.client.host = "127.0.0.1"
 
         with pytest.raises(HTTPException) as exc_info:
-            verify_api_key(request)
+            await verify_api_key(request)
 
         assert exc_info.value.status_code == 401
         assert "Invalid API key" in str(exc_info.value.detail)
 
-    def test_verify_api_key_valid_key(self):
+    @pytest.mark.asyncio
+    async def test_verify_api_key_valid_key(self):
         """Test API key verification with valid key."""
-        request = Mock()
-        request.headers = {"X-API-Key": "valid-key"}
-        request.client.host = "127.0.0.1"
+        from unittest.mock import patch
 
-        result = verify_api_key(request)
-        assert result is True
+        with patch("services.api.auth.settings") as mock_settings:
+            mock_settings.debug = False
+            mock_settings.api_key = "valid-key"
+            mock_settings.api_key_header = "X-API-Key"
+            request = Mock()
+            request.headers = {"X-API-Key": "valid-key"}
+            request.client.host = "127.0.0.1"
+
+            result = await verify_api_key(request)
+            assert result is True
 
 
 class TestGetCurrentUser:

@@ -24,21 +24,21 @@ def sample_attack_sessions() -> list[dict[str, Any]]:
             "timestamp": "2025-07-28T10:00:00Z",
             "payload": "test attack payload 1",
             "target_port": 22,
-            "protocol": "ssh",
+            "protocol": "SSH",
         },
         {
             "source_ip": "192.168.1.2",
             "timestamp": "2025-07-28T10:05:00Z",
             "payload": "test attack payload 2",
             "target_port": 80,
-            "protocol": "http",
+            "protocol": "HTTP",
         },
         {
             "source_ip": "192.168.1.3",
             "timestamp": "2025-07-28T10:10:00Z",
             "payload": "test attack payload 3",
             "target_port": 443,
-            "protocol": "https",
+            "protocol": "HTTPS",
         },
     ]
 
