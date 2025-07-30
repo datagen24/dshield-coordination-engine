@@ -50,28 +50,28 @@ class AttackSession(BaseModel):
     source_ip: str = Field(
         ...,
         description="Source IP address of the attack",
-        example="192.168.1.100",
+        examples=["192.168.1.100"],
         pattern=r"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
     )
     timestamp: datetime = Field(
         ...,
         description="Attack timestamp in ISO 8601 format",
-        example="2025-07-28T10:00:00Z",
+        examples=["2025-07-28T10:00:00Z"],
     )
     payload: str = Field(
         ...,
         description="Attack payload or signature",
-        example="GET /admin HTTP/1.1\r\nHost: example.com\r\nUser-Agent: Mozilla/5.0",
+        examples=["GET /admin HTTP/1.1\r\nHost: example.com\r\nUser-Agent: Mozilla/5.0"],
         min_length=1,
         max_length=10000,
     )
     target_port: int | None = Field(
-        None, description="Target port number", example=80, ge=1, le=65535
+        None, description="Target port number", examples=[80], ge=1, le=65535
     )
     protocol: str | None = Field(
         None,
         description="Network protocol used",
-        example="HTTP",
+        examples=["HTTP"],
         pattern=r"^[A-Z]{2,10}$",
     )
 
@@ -117,13 +117,13 @@ class CoordinationRequest(BaseModel):
     analysis_depth: str = Field(
         "standard",
         description="Analysis depth level",
-        example="standard",
+        examples=["standard"],
         pattern=r"^(minimal|standard|deep)$",
     )
     callback_url: str | None = Field(
         None,
         description="Callback URL for asynchronous result delivery",
-        example="https://example.com/webhook/analysis-complete",
+        examples=["https://example.com/webhook/analysis-complete"],
         pattern=r"^https?://.+",
     )
 
@@ -158,31 +158,31 @@ class CoordinationResponse(BaseModel):
     analysis_id: str = Field(
         ...,
         description="Unique analysis identifier",
-        example="550e8400-e29b-41d4-a716-446655440000",
+        examples=["550e8400-e29b-41d4-a716-446655440000"],
     )
     status: str = Field(
         ...,
         description="Analysis processing status",
-        example="queued",
+        examples=["queued"],
         pattern=r"^(queued|processing|completed|failed)$",
     )
     coordination_confidence: float | None = Field(
         None,
         description="Coordination confidence score (0-1)",
-        example=0.75,
+        examples=[0.75],
         ge=0.0,
         le=1.0,
     )
     evidence: dict[str, Any] | None = Field(
         None,
         description="Detailed analysis evidence and breakdown",
-        example={
+        examples=[{
             "temporal_correlation": 0.8,
             "behavioral_similarity": 0.7,
             "infrastructure_clustering": 0.6,
             "geographic_proximity": 0.5,
             "payload_similarity": 0.9,
-        },
+        }],
     )
     enrichment_applied: bool = Field(
         False, description="Whether data enrichment was applied during analysis"
@@ -210,12 +210,12 @@ class BulkAnalysisRequest(BaseModel):
     analysis_depth: str = Field(
         "standard",
         description="Analysis depth level for all batches",
-        example="standard",
+        examples=["standard"],
     )
     callback_url: str | None = Field(
         None,
         description="Callback URL for bulk analysis results",
-        example="https://example.com/webhook/bulk-analysis-complete",
+        examples=["https://example.com/webhook/bulk-analysis-complete"],
     )
 
 
@@ -233,14 +233,14 @@ class BulkAnalysisResponse(BaseModel):
     analysis_ids: list[str] = Field(
         ...,
         description="List of analysis identifiers for each batch",
-        example=[
+        examples=[[
             "550e8400-e29b-41d4-a716-446655440000",
             "660e8400-e29b-41d4-a716-446655440001",
-        ],
+        ]],
     )
-    status: str = Field(..., description="Overall processing status", example="queued")
+    status: str = Field(..., description="Overall processing status", examples=["queued"])
     batch_count: int = Field(
-        ..., description="Number of batches submitted for analysis", example=2
+        ..., description="Number of batches submitted for analysis", examples=[2]
     )
 
 
@@ -353,7 +353,13 @@ async def analyze_coordination(
 
     logger.info("Analysis queued", analysis_id=analysis_id, user=current_user)
 
-    return CoordinationResponse(analysis_id=analysis_id, status="queued")
+    return CoordinationResponse(
+        analysis_id=analysis_id,
+        status="queued",
+        coordination_confidence=None,
+        evidence=None,
+        enrichment_applied=False
+    )
 
 
 @router.get(

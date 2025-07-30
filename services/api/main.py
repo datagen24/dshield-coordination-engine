@@ -53,8 +53,11 @@ logger = structlog.get_logger(__name__)
 security = HTTPBearer(auto_error=False)
 
 
+from contextlib import asynccontextmanager
+from typing import AsyncGenerator
+
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> None:
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Application lifespan manager.
 
     Handles startup and shutdown events for the FastAPI application.
@@ -221,7 +224,7 @@ def create_app() -> FastAPI:
     )
 
     # Set custom OpenAPI schema
-    app.openapi = custom_openapi
+    app.openapi = lambda: custom_openapi()
 
     # Add CORS middleware
     app.add_middleware(
@@ -254,7 +257,7 @@ app = create_app()
 
 
 @app.exception_handler(Exception)
-async def global_exception_handler(request, exc: Exception) -> HTTPException:
+async def global_exception_handler(request: Request, exc: Exception) -> HTTPException:
     """Global exception handler for unhandled exceptions.
 
     Args:

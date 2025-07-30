@@ -39,19 +39,19 @@ class HealthResponse(BaseModel):
     status: str = Field(
         ...,
         description="Service health status",
-        example="healthy",
+        examples=["healthy"],
         pattern=r"^(healthy|unhealthy)$",
     )
     service: str = Field(
         ...,
         description="Service name identifier",
-        example="dshield-coordination-engine",
+        examples=["dshield-coordination-engine"],
     )
-    version: str = Field(..., description="Service version", example="0.1.0")
+    version: str = Field(..., description="Service version", examples=["0.1.0"])
     timestamp: str = Field(
         ...,
         description="Response timestamp in ISO 8601 format",
-        example="2025-07-28T10:00:00Z",
+        examples=["2025-07-28T10:00:00Z"],
     )
 
 
@@ -70,23 +70,23 @@ class ReadinessResponse(BaseModel):
     status: str = Field(
         ...,
         description="Service readiness status",
-        example="ready",
+        examples=["ready"],
         pattern=r"^(ready|not_ready)$",
     )
     service: str = Field(
         ...,
         description="Service name identifier",
-        example="dshield-coordination-engine",
+        examples=["dshield-coordination-engine"],
     )
     dependencies: dict[str, str] = Field(
         ...,
         description="Dependency health status",
-        example={
+        examples=[{
             "database": "healthy",
             "redis": "healthy",
             "elasticsearch": "healthy",
             "llm_service": "healthy",
-        },
+        }],
     )
 
 
@@ -105,15 +105,15 @@ class LivenessResponse(BaseModel):
     status: str = Field(
         ...,
         description="Service liveness status",
-        example="alive",
+        examples=["alive"],
         pattern=r"^(alive|dead)$",
     )
     service: str = Field(
         ...,
         description="Service name identifier",
-        example="dshield-coordination-engine",
+        examples=["dshield-coordination-engine"],
     )
-    uptime: int = Field(..., description="Service uptime in seconds", example=3600)
+    uptime: int = Field(..., description="Service uptime in seconds", examples=[3600])
 
 
 @router.get(

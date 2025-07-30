@@ -75,7 +75,7 @@ class Settings(BaseSettings):
     worker_threads: int = 2
 
     @validator("allowed_origins", "allowed_methods", "allowed_headers", pre=True)
-    def parse_list_fields(cls, v):
+    def parse_list_fields(cls, v: str | list[str]) -> list[str]:
         """Parse list fields from environment variables."""
         if isinstance(v, str):
             import json
@@ -87,7 +87,7 @@ class Settings(BaseSettings):
         return v
 
     @validator("debug")
-    def set_debug_defaults(cls, v, values):
+    def set_debug_defaults(cls, v: bool, values: dict) -> bool:
         """Set debug-related defaults."""
         if v:
             values["enable_swagger_ui"] = True
