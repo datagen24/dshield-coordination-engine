@@ -30,14 +30,13 @@ repos:
         always_run: true
         stages: [pre-commit]
 
-      # Note: mypy hook disabled due to macOS binary approval issues
-      # - id: mypy-check
-      #   name: mypy
-      #   entry: uv run mypy services agents tools
-      #   language: system
-      #   pass_filenames: false
-      #   always_run: true
-      #   stages: [pre-commit]
+      - id: mypy-check
+        name: mypy
+        entry: uv run mypy services agents tools
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
 
       - id: pytest-check
         name: pytest
