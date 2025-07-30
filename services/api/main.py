@@ -15,19 +15,19 @@ For detailed API documentation, visit:
 - OpenAPI JSON: /openapi.json
 """
 
-from contextlib import asynccontextmanager
 from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 from typing import Any
 
 import structlog
 
-from fastapi import FastAPI, Depends, HTTPException, status, Request
+from fastapi import Depends, FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.security import HTTPBearer
 
-from services.api.config import settings
 from services.api.auth import verify_api_key
+from services.api.config import settings
 from services.api.routers import coordination, health
 
 # Configure structured logging
