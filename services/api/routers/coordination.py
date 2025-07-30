@@ -23,7 +23,7 @@ from typing import Any
 
 import structlog
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Path, status
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 from services.api.auth import get_current_user
 from services.api.config import settings
@@ -77,7 +77,8 @@ class AttackSession(BaseModel):
         pattern=r"^[A-Z]{2,10}$",
     )
 
-    @validator("source_ip")
+    @field_validator("source_ip")
+    @classmethod
     def validate_ip_address(cls, v: str) -> str:
         """Validate IP address format."""
         import ipaddress
@@ -88,7 +89,8 @@ class AttackSession(BaseModel):
         except ValueError as err:
             raise ValueError("Invalid IP address format") from err
 
-    @validator("timestamp")
+    @field_validator("timestamp")
+    @classmethod
     def validate_timestamp(cls, v: datetime) -> datetime:
         """Validate timestamp is not in the future."""
         now = datetime.now(UTC)
@@ -127,7 +129,8 @@ class CoordinationRequest(BaseModel):
         pattern=r"^https?://.+",
     )
 
-    @validator("attack_sessions")
+    @field_validator("attack_sessions")
+    @classmethod
     def validate_session_count(cls, v: list[AttackSession]) -> list[AttackSession]:
         """Validate minimum and maximum session count."""
         if len(v) < 2:
@@ -424,7 +427,7 @@ async def get_analysis_results(
     analysis_id: str = Path(
         ...,
         description="Analysis identifier",
-        example="550e8400-e29b-41d4-a716-446655440000",
+        examples=["550e8400-e29b-41d4-a716-446655440000"],
     ),
     current_user: str = Depends(get_current_user),
 ) -> CoordinationResponse:

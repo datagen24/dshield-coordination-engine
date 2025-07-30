@@ -1,6 +1,6 @@
 """Configuration settings for the DShield Coordination Engine API."""
 
-from pydantic import validator
+from pydantic import field_validator, ConfigDict
 from pydantic_settings import BaseSettings
 
 
@@ -74,7 +74,8 @@ class Settings(BaseSettings):
     worker_processes: int = 4
     worker_threads: int = 2
 
-    @validator("allowed_origins", "allowed_methods", "allowed_headers", pre=True)
+    @field_validator("allowed_origins", "allowed_methods", "allowed_headers", mode="before")
+    @classmethod
     def parse_list_fields(cls, v: str | list[str]) -> list[str]:
         """Parse list fields from environment variables."""
         if isinstance(v, str):
@@ -90,17 +91,19 @@ class Settings(BaseSettings):
                 return [v]
         return v
 
-    @validator("debug")
-    def set_debug_defaults(cls, v: bool, values: dict) -> bool:
+    @field_validator("debug")
+    @classmethod
+    def set_debug_defaults(cls, v: bool, info) -> bool:
         """Set debug-related defaults."""
         if v:
-            values["enable_swagger_ui"] = True
-            values["enable_redoc"] = True
+            info.data["enable_swagger_ui"] = True
+            info.data["enable_redoc"] = True
         return v
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
+    model_config = ConfigDict(
+        env_file=".env",
+        case_sensitive=False,
+    )
 
 
 # Create settings instance
