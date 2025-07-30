@@ -20,7 +20,6 @@ from contextlib import asynccontextmanager
 from typing import Any
 
 import structlog
-
 from fastapi import Depends, FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
@@ -223,7 +222,7 @@ def create_app() -> FastAPI:
     )
 
     # Set custom OpenAPI schema
-    app.openapi = lambda: custom_openapi()
+    app.openapi = custom_openapi
 
     # Add CORS middleware
     app.add_middleware(

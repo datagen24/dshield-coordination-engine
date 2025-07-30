@@ -61,7 +61,9 @@ class AttackSession(BaseModel):
     payload: str = Field(
         ...,
         description="Attack payload or signature",
-        examples=["GET /admin HTTP/1.1\r\nHost: example.com\r\nUser-Agent: Mozilla/5.0"],
+        examples=[
+            "GET /admin HTTP/1.1\r\nHost: example.com\r\nUser-Agent: Mozilla/5.0"
+        ],
         min_length=1,
         max_length=10000,
     )
@@ -111,8 +113,6 @@ class CoordinationRequest(BaseModel):
     attack_sessions: list[AttackSession] = Field(
         ...,
         description="List of attack sessions to analyze for coordination patterns",
-        min_items=2,
-        max_items=1000,
     )
     analysis_depth: str = Field(
         "standard",
@@ -176,13 +176,15 @@ class CoordinationResponse(BaseModel):
     evidence: dict[str, Any] | None = Field(
         None,
         description="Detailed analysis evidence and breakdown",
-        examples=[{
-            "temporal_correlation": 0.8,
-            "behavioral_similarity": 0.7,
-            "infrastructure_clustering": 0.6,
-            "geographic_proximity": 0.5,
-            "payload_similarity": 0.9,
-        }],
+        examples=[
+            {
+                "temporal_correlation": 0.8,
+                "behavioral_similarity": 0.7,
+                "infrastructure_clustering": 0.6,
+                "geographic_proximity": 0.5,
+                "payload_similarity": 0.9,
+            }
+        ],
     )
     enrichment_applied: bool = Field(
         False, description="Whether data enrichment was applied during analysis"
@@ -204,8 +206,6 @@ class BulkAnalysisRequest(BaseModel):
     session_batches: list[list[AttackSession]] = Field(
         ...,
         description="List of attack session batches to analyze",
-        min_items=1,
-        max_items=100,
     )
     analysis_depth: str = Field(
         "standard",
@@ -233,12 +233,16 @@ class BulkAnalysisResponse(BaseModel):
     analysis_ids: list[str] = Field(
         ...,
         description="List of analysis identifiers for each batch",
-        examples=[[
-            "550e8400-e29b-41d4-a716-446655440000",
-            "660e8400-e29b-41d4-a716-446655440001",
-        ]],
+        examples=[
+            [
+                "550e8400-e29b-41d4-a716-446655440000",
+                "660e8400-e29b-41d4-a716-446655440001",
+            ]
+        ],
     )
-    status: str = Field(..., description="Overall processing status", examples=["queued"])
+    status: str = Field(
+        ..., description="Overall processing status", examples=["queued"]
+    )
     batch_count: int = Field(
         ..., description="Number of batches submitted for analysis", examples=[2]
     )
@@ -358,7 +362,7 @@ async def analyze_coordination(
         status="queued",
         coordination_confidence=None,
         evidence=None,
-        enrichment_applied=False
+        enrichment_applied=False,
     )
 
 

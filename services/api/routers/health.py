@@ -81,12 +81,14 @@ class ReadinessResponse(BaseModel):
     dependencies: dict[str, str] = Field(
         ...,
         description="Dependency health status",
-        examples=[{
-            "database": "healthy",
-            "redis": "healthy",
-            "elasticsearch": "healthy",
-            "llm_service": "healthy",
-        }],
+        examples=[
+            {
+                "database": "healthy",
+                "redis": "healthy",
+                "elasticsearch": "healthy",
+                "llm_service": "healthy",
+            }
+        ],
     )
 
 
