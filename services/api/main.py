@@ -15,17 +15,15 @@ For detailed API documentation, visit:
 - OpenAPI JSON: /openapi.json
 """
 
-from contextlib import asynccontextmanager
-from typing import Any
-
-import structlog
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.security import HTTPBearer
-
-from services.api.auth import verify_api_key
+from contextlib import asynccontextmanager
+from collections.abc import AsyncGenerator
+import structlog
 from services.api.config import settings
+from services.api.auth import verify_api_key
 from services.api.routers import coordination, health
 
 # Configure structured logging
@@ -52,9 +50,6 @@ logger = structlog.get_logger(__name__)
 # Security
 security = HTTPBearer(auto_error=False)
 
-
-from contextlib import asynccontextmanager
-from typing import AsyncGenerator
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
