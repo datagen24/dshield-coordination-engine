@@ -51,50 +51,47 @@ class AttackSession(BaseModel):
         ...,
         description="Source IP address of the attack",
         example="192.168.1.100",
-        pattern=r"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
+        pattern=r"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
     )
     timestamp: datetime = Field(
         ...,
         description="Attack timestamp in ISO 8601 format",
-        example="2025-07-28T10:00:00Z"
+        example="2025-07-28T10:00:00Z",
     )
     payload: str = Field(
         ...,
         description="Attack payload or signature",
         example="GET /admin HTTP/1.1\r\nHost: example.com\r\nUser-Agent: Mozilla/5.0",
         min_length=1,
-        max_length=10000
+        max_length=10000,
     )
     target_port: int | None = Field(
-        None,
-        description="Target port number",
-        example=80,
-        ge=1,
-        le=65535
+        None, description="Target port number", example=80, ge=1, le=65535
     )
     protocol: str | None = Field(
         None,
         description="Network protocol used",
         example="HTTP",
-        pattern=r"^[A-Z]{2,10}$"
+        pattern=r"^[A-Z]{2,10}$",
     )
 
-    @validator('source_ip')
+    @validator("source_ip")
     def validate_ip_address(cls, v: str) -> str:
         """Validate IP address format."""
         import ipaddress
+
         try:
             ipaddress.ip_address(v)
             return v
-        except ValueError:
-            raise ValueError('Invalid IP address format')
+        except ValueError as err:
+            raise ValueError("Invalid IP address format") from err
 
-    @validator('timestamp')
+    @validator("timestamp")
     def validate_timestamp(cls, v: datetime) -> datetime:
         """Validate timestamp is not in the future."""
         now = datetime.now(UTC)
         if v > now:
-            raise ValueError('Timestamp cannot be in the future')
+            raise ValueError("Timestamp cannot be in the future")
         return v
 
 
@@ -115,28 +112,32 @@ class CoordinationRequest(BaseModel):
         ...,
         description="List of attack sessions to analyze for coordination patterns",
         min_items=2,
-        max_items=1000
+        max_items=1000,
     )
     analysis_depth: str = Field(
         "standard",
         description="Analysis depth level",
         example="standard",
-        pattern=r"^(minimal|standard|deep)$"
+        pattern=r"^(minimal|standard|deep)$",
     )
     callback_url: str | None = Field(
         None,
         description="Callback URL for asynchronous result delivery",
         example="https://example.com/webhook/analysis-complete",
-        pattern=r"^https?://.+"
+        pattern=r"^https?://.+",
     )
 
-    @validator('attack_sessions')
+    @validator("attack_sessions")
     def validate_session_count(cls, v: list[AttackSession]) -> list[AttackSession]:
         """Validate minimum and maximum session count."""
         if len(v) < 2:
-            raise ValueError('At least 2 attack sessions required for coordination analysis')
+            raise ValueError(
+                "At least 2 attack sessions required for coordination analysis"
+            )
         if len(v) > settings.analysis_max_sessions:
-            raise ValueError(f'Maximum {settings.analysis_max_sessions} sessions allowed')
+            raise ValueError(
+                f"Maximum {settings.analysis_max_sessions} sessions allowed"
+            )
         return v
 
 
@@ -157,20 +158,20 @@ class CoordinationResponse(BaseModel):
     analysis_id: str = Field(
         ...,
         description="Unique analysis identifier",
-        example="550e8400-e29b-41d4-a716-446655440000"
+        example="550e8400-e29b-41d4-a716-446655440000",
     )
     status: str = Field(
         ...,
         description="Analysis processing status",
         example="queued",
-        pattern=r"^(queued|processing|completed|failed)$"
+        pattern=r"^(queued|processing|completed|failed)$",
     )
     coordination_confidence: float | None = Field(
         None,
         description="Coordination confidence score (0-1)",
         example=0.75,
         ge=0.0,
-        le=1.0
+        le=1.0,
     )
     evidence: dict[str, Any] | None = Field(
         None,
@@ -180,12 +181,11 @@ class CoordinationResponse(BaseModel):
             "behavioral_similarity": 0.7,
             "infrastructure_clustering": 0.6,
             "geographic_proximity": 0.5,
-            "payload_similarity": 0.9
-        }
+            "payload_similarity": 0.9,
+        },
     )
     enrichment_applied: bool = Field(
-        False,
-        description="Whether data enrichment was applied during analysis"
+        False, description="Whether data enrichment was applied during analysis"
     )
 
 
@@ -205,17 +205,17 @@ class BulkAnalysisRequest(BaseModel):
         ...,
         description="List of attack session batches to analyze",
         min_items=1,
-        max_items=100
+        max_items=100,
     )
     analysis_depth: str = Field(
         "standard",
         description="Analysis depth level for all batches",
-        example="standard"
+        example="standard",
     )
     callback_url: str | None = Field(
         None,
         description="Callback URL for bulk analysis results",
-        example="https://example.com/webhook/bulk-analysis-complete"
+        example="https://example.com/webhook/bulk-analysis-complete",
     )
 
 
@@ -233,17 +233,14 @@ class BulkAnalysisResponse(BaseModel):
     analysis_ids: list[str] = Field(
         ...,
         description="List of analysis identifiers for each batch",
-        example=["550e8400-e29b-41d4-a716-446655440000", "660e8400-e29b-41d4-a716-446655440001"]
+        example=[
+            "550e8400-e29b-41d4-a716-446655440000",
+            "660e8400-e29b-41d4-a716-446655440001",
+        ],
     )
-    status: str = Field(
-        ...,
-        description="Overall processing status",
-        example="queued"
-    )
+    status: str = Field(..., description="Overall processing status", example="queued")
     batch_count: int = Field(
-        ...,
-        description="Number of batches submitted for analysis",
-        example=2
+        ..., description="Number of batches submitted for analysis", example=2
     )
 
 
@@ -281,10 +278,10 @@ coordination, along with detailed evidence supporting the assessment.
                         "status": "queued",
                         "coordination_confidence": None,
                         "evidence": None,
-                        "enrichment_applied": False
+                        "enrichment_applied": False,
                     }
                 }
-            }
+            },
         },
         400: {
             "description": "Invalid request parameters",
@@ -294,15 +291,11 @@ coordination, along with detailed evidence supporting the assessment.
                         "detail": "At least 2 attack sessions required for coordination analysis"
                     }
                 }
-            }
+            },
         },
-        401: {
-            "description": "Missing or invalid API key"
-        },
-        429: {
-            "description": "Rate limit exceeded"
-        }
-    }
+        401: {"description": "Missing or invalid API key"},
+        429: {"description": "Rate limit exceeded"},
+    },
 )
 async def analyze_coordination(
     request: CoordinationRequest,
@@ -401,31 +394,29 @@ Completed analyses include confidence scores and detailed evidence breakdown.
                             "behavioral_similarity": 0.7,
                             "infrastructure_clustering": 0.6,
                             "geographic_proximity": 0.5,
-                            "payload_similarity": 0.9
+                            "payload_similarity": 0.9,
                         },
-                        "enrichment_applied": True
+                        "enrichment_applied": True,
                     }
                 }
-            }
+            },
         },
         404: {
             "description": "Analysis not found",
             "content": {
-                "application/json": {
-                    "example": {
-                        "detail": "Analysis not found"
-                    }
-                }
-            }
+                "application/json": {"example": {"detail": "Analysis not found"}}
+            },
         },
-        401: {
-            "description": "Missing or invalid API key"
-        }
-    }
+        401: {"description": "Missing or invalid API key"},
+    },
 )
 async def get_analysis_results(
-    analysis_id: str = Path(..., description="Analysis identifier", example="550e8400-e29b-41d4-a716-446655440000"),
-    current_user: str = Depends(get_current_user)
+    analysis_id: str = Path(
+        ...,
+        description="Analysis identifier",
+        example="550e8400-e29b-41d4-a716-446655440000",
+    ),
+    current_user: str = Depends(get_current_user),
 ) -> CoordinationResponse:
     """Get coordination analysis results by analysis ID.
 
@@ -458,7 +449,7 @@ async def get_analysis_results(
             "behavioral_similarity": 0.7,
             "infrastructure_clustering": 0.6,
             "geographic_proximity": 0.5,
-            "payload_similarity": 0.9
+            "payload_similarity": 0.9,
         },
         enrichment_applied=True,
     )
@@ -494,24 +485,18 @@ is processed independently and can have different analysis depths.
                     "example": {
                         "analysis_ids": [
                             "550e8400-e29b-41d4-a716-446655440000",
-                            "660e8400-e29b-41d4-a716-446655440001"
+                            "660e8400-e29b-41d4-a716-446655440001",
                         ],
                         "status": "queued",
-                        "batch_count": 2
+                        "batch_count": 2,
                     }
                 }
-            }
+            },
         },
-        400: {
-            "description": "Invalid request parameters"
-        },
-        401: {
-            "description": "Missing or invalid API key"
-        },
-        429: {
-            "description": "Rate limit exceeded"
-        }
-    }
+        400: {"description": "Invalid request parameters"},
+        401: {"description": "Missing or invalid API key"},
+        429: {"description": "Rate limit exceeded"},
+    },
 )
 async def bulk_analysis(
     request: BulkAnalysisRequest,
@@ -538,7 +523,7 @@ async def bulk_analysis(
     logger.info(
         "Bulk analysis requested",
         user=current_user,
-        batch_count=len(request.session_batches)
+        batch_count=len(request.session_batches),
     )
 
     analysis_ids = []
@@ -558,7 +543,7 @@ async def bulk_analysis(
     return BulkAnalysisResponse(
         analysis_ids=analysis_ids,
         status="queued",
-        batch_count=len(request.session_batches)
+        batch_count=len(request.session_batches),
     )
 
 
@@ -640,6 +625,9 @@ async def process_bulk_analysis(
 
     except Exception as e:
         logger.error(
-            "Bulk analysis batch failed", analysis_id=analysis_id, user=user, error=str(e)
+            "Bulk analysis batch failed",
+            analysis_id=analysis_id,
+            user=user,
+            error=str(e),
         )
         # TODO: Update analysis status to failed

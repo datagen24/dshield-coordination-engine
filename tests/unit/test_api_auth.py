@@ -15,6 +15,7 @@ class TestVerifyApiKey:
     async def test_verify_api_key_debug_mode(self):
         """Test API key verification in debug mode."""
         from unittest.mock import patch
+
         with patch("services.api.auth.settings") as mock_settings:
             mock_settings.debug = True
             request = Mock()
@@ -53,6 +54,7 @@ class TestVerifyApiKey:
     async def test_verify_api_key_valid_key(self):
         """Test API key verification with valid key."""
         from unittest.mock import patch
+
         with patch("services.api.auth.settings") as mock_settings:
             mock_settings.debug = False
             mock_settings.api_key = "valid-key"

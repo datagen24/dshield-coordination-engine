@@ -28,9 +28,7 @@ class TestAnalyzeCoordination:
         background_tasks = Mock()
         current_user = "test-user"
 
-        result = await analyze_coordination(
-            request, background_tasks, current_user
-        )
+        result = await analyze_coordination(request, background_tasks, current_user)
 
         assert isinstance(result, CoordinationResponse)
         assert result.status == "queued"
@@ -108,9 +106,9 @@ class TestBulkAnalysis:
     async def test_bulk_analysis_success(self, sample_attack_sessions):
         """Test successful bulk analysis."""
         from services.api.routers.coordination import BulkAnalysisRequest
+
         request = BulkAnalysisRequest(
-            session_batches=[sample_attack_sessions],
-            analysis_depth="standard"
+            session_batches=[sample_attack_sessions], analysis_depth="standard"
         )
         background_tasks = Mock()
         current_user = "test-user"

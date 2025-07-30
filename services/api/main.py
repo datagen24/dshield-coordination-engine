@@ -145,15 +145,13 @@ For detailed usage examples, see the individual endpoint documentation below.
     openapi_schema["info"]["contact"] = {
         "name": "DShield Team",
         "email": "team@dshield.org",
-        "url": "https://dshield.org"
+        "url": "https://dshield.org",
     }
     openapi_schema["info"]["license"] = {
         "name": "MIT License",
-        "url": "https://opensource.org/licenses/MIT"
+        "url": "https://opensource.org/licenses/MIT",
     }
-    openapi_schema["info"]["x-logo"] = {
-        "url": "https://dshield.org/logo.png"
-    }
+    openapi_schema["info"]["x-logo"] = {"url": "https://dshield.org/logo.png"}
 
     # Add security schemes
     openapi_schema["components"]["securitySchemes"] = {
@@ -161,7 +159,7 @@ For detailed usage examples, see the individual endpoint documentation below.
             "type": "apiKey",
             "in": "header",
             "name": "X-API-Key",
-            "description": "API key for authentication"
+            "description": "API key for authentication",
         }
     }
 
@@ -170,14 +168,8 @@ For detailed usage examples, see the individual endpoint documentation below.
 
     # Add server information
     openapi_schema["servers"] = [
-        {
-            "url": "http://localhost:8000",
-            "description": "Development server"
-        },
-        {
-            "url": "https://api.dshield.org",
-            "description": "Production server"
-        }
+        {"url": "http://localhost:8000", "description": "Development server"},
+        {"url": "https://api.dshield.org", "description": "Production server"},
     ]
 
     # Add tags metadata
@@ -187,17 +179,17 @@ For detailed usage examples, see the individual endpoint documentation below.
             "description": "Health monitoring and readiness checks",
             "externalDocs": {
                 "description": "Health Check Documentation",
-                "url": "https://dshield.org/docs/health"
-            }
+                "url": "https://dshield.org/docs/health",
+            },
         },
         {
             "name": "coordination",
             "description": "Attack coordination analysis endpoints",
             "externalDocs": {
                 "description": "Coordination Analysis Documentation",
-                "url": "https://dshield.org/docs/coordination"
-            }
-        }
+                "url": "https://dshield.org/docs/coordination",
+            },
+        },
     ]
 
     app.openapi_schema = openapi_schema

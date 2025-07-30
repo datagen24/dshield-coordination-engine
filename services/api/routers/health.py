@@ -14,7 +14,6 @@ For detailed API documentation, visit:
 - ReDoc: /redoc
 """
 
-
 import structlog
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, Field
@@ -41,22 +40,18 @@ class HealthResponse(BaseModel):
         ...,
         description="Service health status",
         example="healthy",
-        pattern=r"^(healthy|unhealthy)$"
+        pattern=r"^(healthy|unhealthy)$",
     )
     service: str = Field(
         ...,
         description="Service name identifier",
-        example="dshield-coordination-engine"
+        example="dshield-coordination-engine",
     )
-    version: str = Field(
-        ...,
-        description="Service version",
-        example="0.1.0"
-    )
+    version: str = Field(..., description="Service version", example="0.1.0")
     timestamp: str = Field(
         ...,
         description="Response timestamp in ISO 8601 format",
-        example="2025-07-28T10:00:00Z"
+        example="2025-07-28T10:00:00Z",
     )
 
 
@@ -76,12 +71,12 @@ class ReadinessResponse(BaseModel):
         ...,
         description="Service readiness status",
         example="ready",
-        pattern=r"^(ready|not_ready)$"
+        pattern=r"^(ready|not_ready)$",
     )
     service: str = Field(
         ...,
         description="Service name identifier",
-        example="dshield-coordination-engine"
+        example="dshield-coordination-engine",
     )
     dependencies: dict[str, str] = Field(
         ...,
@@ -90,8 +85,8 @@ class ReadinessResponse(BaseModel):
             "database": "healthy",
             "redis": "healthy",
             "elasticsearch": "healthy",
-            "llm_service": "healthy"
-        }
+            "llm_service": "healthy",
+        },
     )
 
 
@@ -111,18 +106,14 @@ class LivenessResponse(BaseModel):
         ...,
         description="Service liveness status",
         example="alive",
-        pattern=r"^(alive|dead)$"
+        pattern=r"^(alive|dead)$",
     )
     service: str = Field(
         ...,
         description="Service name identifier",
-        example="dshield-coordination-engine"
+        example="dshield-coordination-engine",
     )
-    uptime: int = Field(
-        ...,
-        description="Service uptime in seconds",
-        example=3600
-    )
+    uptime: int = Field(..., description="Service uptime in seconds", example=3600)
 
 
 @router.get(
@@ -162,10 +153,10 @@ This endpoint can be used with monitoring systems like:
                         "status": "healthy",
                         "service": "dshield-coordination-engine",
                         "version": "0.1.0",
-                        "timestamp": "2025-07-28T10:00:00Z"
+                        "timestamp": "2025-07-28T10:00:00Z",
                     }
                 }
-            }
+            },
         },
         503: {
             "description": "Service is unhealthy",
@@ -175,12 +166,12 @@ This endpoint can be used with monitoring systems like:
                         "status": "unhealthy",
                         "service": "dshield-coordination-engine",
                         "version": "0.1.0",
-                        "timestamp": "2025-07-28T10:00:00Z"
+                        "timestamp": "2025-07-28T10:00:00Z",
                     }
                 }
-            }
-        }
-    }
+            },
+        },
+    },
 )
 async def health_check() -> HealthResponse:
     """Perform basic health check for service availability.
@@ -201,14 +192,14 @@ async def health_check() -> HealthResponse:
             status="healthy",
             service="dshield-coordination-engine",
             version="0.1.0",
-            timestamp="2025-07-28T10:00:00Z"  # TODO: Use actual timestamp
+            timestamp="2025-07-28T10:00:00Z",  # TODO: Use actual timestamp
         )
     except Exception as e:
         logger.error("Health check failed", error=str(e))
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Service is unhealthy"
-        )
+            detail="Service is unhealthy",
+        ) from e
 
 
 @router.get(
@@ -263,11 +254,11 @@ readinessProbe:
                             "database": "healthy",
                             "redis": "healthy",
                             "elasticsearch": "healthy",
-                            "llm_service": "healthy"
-                        }
+                            "llm_service": "healthy",
+                        },
                     }
                 }
-            }
+            },
         },
         503: {
             "description": "Service is not ready",
@@ -280,13 +271,13 @@ readinessProbe:
                             "database": "unhealthy",
                             "redis": "healthy",
                             "elasticsearch": "healthy",
-                            "llm_service": "healthy"
-                        }
+                            "llm_service": "healthy",
+                        },
                     }
                 }
-            }
-        }
-    }
+            },
+        },
+    },
 )
 async def readiness_check() -> ReadinessResponse:
     """Perform readiness check for Kubernetes deployments.
@@ -314,7 +305,7 @@ async def readiness_check() -> ReadinessResponse:
             "database": "healthy",
             "redis": "healthy",
             "elasticsearch": "healthy",
-            "llm_service": "healthy"
+            "llm_service": "healthy",
         }
 
         # Check if all dependencies are healthy
@@ -324,13 +315,13 @@ async def readiness_check() -> ReadinessResponse:
             logger.warning("Readiness check failed", dependencies=dependencies)
             raise HTTPException(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                detail="Service not ready"
+                detail="Service not ready",
             )
 
         return ReadinessResponse(
             status="ready",
             service="dshield-coordination-engine",
-            dependencies=dependencies
+            dependencies=dependencies,
         )
 
     except HTTPException:
@@ -338,9 +329,8 @@ async def readiness_check() -> ReadinessResponse:
     except Exception as e:
         logger.error("Readiness check failed", error=str(e))
         raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Service not ready"
-        )
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Service not ready"
+        ) from e
 
 
 @router.get(
@@ -390,10 +380,10 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
                     "example": {
                         "status": "alive",
                         "service": "dshield-coordination-engine",
-                        "uptime": 3600
+                        "uptime": 3600,
                     }
                 }
-            }
+            },
         },
         503: {
             "description": "Service process is dead or unresponsive",
@@ -402,12 +392,12 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
                     "example": {
                         "status": "dead",
                         "service": "dshield-coordination-engine",
-                        "uptime": 0
+                        "uptime": 0,
                     }
                 }
-            }
-        }
-    }
+            },
+        },
+    },
 )
 async def liveness_check() -> LivenessResponse:
     """Perform liveness check for container health monitoring.
@@ -428,14 +418,12 @@ async def liveness_check() -> LivenessResponse:
         uptime_seconds = 3600  # Mock value
 
         return LivenessResponse(
-            status="alive",
-            service="dshield-coordination-engine",
-            uptime=uptime_seconds
+            status="alive", service="dshield-coordination-engine", uptime=uptime_seconds
         )
 
     except Exception as e:
         logger.error("Liveness check failed", error=str(e))
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Service process is dead"
-        )
+            detail="Service process is dead",
+        ) from e
