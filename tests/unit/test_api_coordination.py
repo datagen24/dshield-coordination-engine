@@ -49,7 +49,9 @@ class TestAnalyzeCoordination:
                 analysis_depth="standard",
             )
 
-        assert "At least 2 attack sessions required for coordination analysis" in str(exc_info.value)
+        assert "At least 2 attack sessions required for coordination analysis" in str(
+            exc_info.value
+        )
 
     def test_analyze_coordination_too_many_sessions_validation(self, mock_settings):
         """Test coordination analysis validation with too many sessions."""

@@ -1,6 +1,6 @@
 """Configuration settings for the DShield Coordination Engine API."""
 
-from pydantic import field_validator, ConfigDict
+from pydantic import ConfigDict, field_validator
 from pydantic_settings import BaseSettings
 
 
