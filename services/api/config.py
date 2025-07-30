@@ -81,7 +81,11 @@ class Settings(BaseSettings):
             import json
 
             try:
-                return json.loads(v)
+                result = json.loads(v)
+                if isinstance(result, list):
+                    return result
+                else:
+                    return [v]
             except json.JSONDecodeError:
                 return [v]
         return v
