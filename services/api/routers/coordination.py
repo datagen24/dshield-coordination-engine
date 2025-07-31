@@ -586,14 +586,50 @@ async def process_coordination_analysis(
     )
 
     try:
-        # TODO: Implement actual analysis logic
-        # This would involve:
-        # 1. Calling the LangGraph workflow
-        # 2. Processing results
-        # 3. Storing in database
-        # 4. Sending notifications if callback_url provided
+        # Import the workflow and LLM client
+        from services.llm import LLMClient
+        from services.llm.models import ModelConfig
+        from services.workflow.graph import run_coordination_analysis
 
-        logger.info("Analysis completed", analysis_id=analysis_id, user=user)
+        # Initialize LLM client
+        llm_config = ModelConfig(
+            model_name=settings.default_llm_model,
+            temperature=settings.llm_temperature,
+            max_tokens=settings.llm_max_tokens,
+            timeout=settings.llm_timeout,
+        )
+
+        async with LLMClient(
+            base_url=settings.ollama_base_url,
+            default_config=llm_config,
+        ) as llm_client:
+            # Convert AttackSession objects to dictionaries
+            session_data = [
+                {
+                    "source_ip": session.source_ip,
+                    "timestamp": session.timestamp.isoformat(),
+                    "payload": session.payload,
+                    "target_port": session.target_port,
+                    "protocol": session.protocol,
+                }
+                for session in attack_sessions
+            ]
+
+            # Run coordination analysis
+            result = await run_coordination_analysis(
+                attack_sessions=session_data,
+                analysis_depth=analysis_depth,
+                user_id=user,
+                llm_client=llm_client,
+            )
+
+            # TODO: Store results in database
+            logger.info(
+                "Analysis completed",
+                analysis_id=analysis_id,
+                user=user,
+                confidence=result.get("coordination_confidence"),
+            )
 
     except Exception as e:
         logger.error(
@@ -627,14 +663,50 @@ async def process_bulk_analysis(
     )
 
     try:
-        # TODO: Implement bulk analysis logic
-        # This would involve:
-        # 1. Calling the LangGraph workflow for batch processing
-        # 2. Processing results with batch optimizations
-        # 3. Storing in database
-        # 4. Sending notifications if callback_url provided
+        # Import the workflow and LLM client
+        from services.llm import LLMClient
+        from services.llm.models import ModelConfig
+        from services.workflow.graph import run_coordination_analysis
 
-        logger.info("Bulk analysis batch completed", analysis_id=analysis_id, user=user)
+        # Initialize LLM client
+        llm_config = ModelConfig(
+            model_name=settings.llm_model,
+            temperature=settings.llm_temperature,
+            max_tokens=settings.llm_max_tokens,
+            timeout=settings.llm_timeout,
+        )
+
+        async with LLMClient(
+            base_url=settings.llm_service_url,
+            default_config=llm_config,
+        ) as llm_client:
+            # Convert AttackSession objects to dictionaries
+            session_data = [
+                {
+                    "source_ip": session.source_ip,
+                    "timestamp": session.timestamp.isoformat(),
+                    "payload": session.payload,
+                    "target_port": session.target_port,
+                    "protocol": session.protocol,
+                }
+                for session in attack_sessions
+            ]
+
+            # Run coordination analysis for this batch
+            result = await run_coordination_analysis(
+                attack_sessions=session_data,
+                analysis_depth=analysis_depth,
+                user_id=user,
+                llm_client=llm_client,
+            )
+
+            # TODO: Store batch results in database
+            logger.info(
+                "Bulk analysis batch completed",
+                analysis_id=analysis_id,
+                user=user,
+                confidence=result.get("coordination_confidence"),
+            )
 
     except Exception as e:
         logger.error(

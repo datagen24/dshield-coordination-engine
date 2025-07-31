@@ -47,6 +47,7 @@ dependencies = [
     "mypy>=1.7.0",
     "pre-commit>=3.5.0",
     "pydantic-settings>=2.10.1",
+    "ormsgpack>=1.10.0",
 ]
 
 [project.optional-dependencies]
@@ -182,3 +183,8 @@ skips = ["B101", "B601"]
 
 [tool.semgrep]
 config = "auto"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.17.0",
+]
