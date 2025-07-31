@@ -62,6 +62,15 @@ class Settings(BaseSettings):
     analysis_temporal_window_seconds: int = 300
     analysis_batch_size: int = 100
 
+    # Celery Configuration
+    celery_broker_url: str = "redis://localhost:6379/0"
+    celery_result_backend: str = "redis://localhost:6379/0"
+    celery_task_time_limit: int = 1800  # 30 minutes
+    celery_task_soft_time_limit: int = 1500  # 25 minutes
+    celery_worker_prefetch_multiplier: int = 1
+    celery_worker_max_tasks_per_child: int = 1000
+    celery_worker_max_memory_per_child: int = 200000  # 200MB
+
     # Development Configuration
     debug: bool = False
     environment: str = "production"

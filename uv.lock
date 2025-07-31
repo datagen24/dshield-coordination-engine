@@ -554,6 +554,7 @@ dependencies = [
     { name = "langchain" },
     { name = "langgraph" },
     { name = "mypy" },
+    { name = "ormsgpack" },
     { name = "pre-commit" },
     { name = "prometheus-client" },
     { name = "psycopg2-binary" },
@@ -594,6 +595,11 @@ security = [
     { name = "semgrep" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "mypy" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "alembic", specifier = ">=1.13.0" },
@@ -611,6 +617,7 @@ requires-dist = [
     { name = "mkdocstrings", extras = ["python"], marker = "extra == 'docs'", specifier = ">=0.24.0" },
     { name = "mypy", specifier = ">=1.7.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.7.0" },
+    { name = "ormsgpack", specifier = ">=1.10.0" },
     { name = "pre-commit", specifier = ">=3.5.0" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=3.5.0" },
     { name = "prometheus-client", specifier = ">=0.19.0" },
@@ -636,6 +643,9 @@ requires-dist = [
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.24.0" },
 ]
 provides-extras = ["dev", "security", "docs"]
+
+[package.metadata.requires-dev]
+dev = [{ name = "mypy", specifier = ">=1.17.0" }]
 
 [[package]]
 name = "exceptiongroup"
